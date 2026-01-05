@@ -77,53 +77,110 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(el);
     });
 
-    // Lightbox functionality
+    // Lightbox functionality with swipe support
     const lightbox = document.getElementById('lightbox');
-    const lightboxImage = document.getElementById('lightbox-image');
+    const lightboxContainer = document.getElementById('lightbox-container');
     const lightboxClose = document.querySelector('.lightbox-close');
     const lightboxPrev = document.querySelector('.lightbox-prev');
     const lightboxNext = document.querySelector('.lightbox-next');
+    const lightboxIndicator = document.getElementById('lightbox-indicator');
     const screenshotCards = document.querySelectorAll('.screenshot-card');
     
     let currentImageIndex = 0;
+    let isDragging = false;
+    let startX = 0;
+    let currentX = 0;
+    let translateX = 0;
+    
     const screenshots = Array.from(screenshotCards).map(card => {
         const img = card.querySelector('img');
         return img ? img.src : null;
     }).filter(src => src !== null);
 
+    // Create indicator dots
+    function createIndicators() {
+        if (!lightboxIndicator) return;
+        lightboxIndicator.innerHTML = '';
+        screenshots.forEach((_, index) => {
+            const dot = document.createElement('div');
+            dot.className = 'lightbox-dot';
+            if (index === currentImageIndex) {
+                dot.classList.add('active');
+            }
+            dot.addEventListener('click', () => {
+                goToImage(index);
+            });
+            lightboxIndicator.appendChild(dot);
+        });
+    }
+
+    // Create lightbox images
+    function createLightboxImages() {
+        if (!lightboxContainer) return;
+        lightboxContainer.innerHTML = '';
+        screenshots.forEach((src, index) => {
+            const img = document.createElement('img');
+            img.src = src;
+            img.className = 'lightbox-image';
+            img.alt = `Screenshot ${index + 1}`;
+            lightboxContainer.appendChild(img);
+        });
+    }
+
     // Open lightbox
     screenshotCards.forEach((card, index) => {
-        const viewButton = card.querySelector('.screenshot-view');
-        if (viewButton) {
-            viewButton.addEventListener('click', function(e) {
-                e.stopPropagation();
-                currentImageIndex = index;
-                openLightbox(screenshots[currentImageIndex]);
-            });
-        }
-        
-        // Also open on card click
         card.addEventListener('click', function(e) {
-            if (e.target !== viewButton) {
-                currentImageIndex = index;
-                openLightbox(screenshots[currentImageIndex]);
-            }
+            e.preventDefault();
+            currentImageIndex = index;
+            openLightbox();
         });
     });
 
-    function openLightbox(imageSrc) {
-        if (lightbox && lightboxImage) {
-            lightboxImage.src = imageSrc;
-            lightbox.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
+    function openLightbox() {
+        if (!lightbox || !lightboxContainer) return;
+        
+        createLightboxImages();
+        createIndicators();
+        lightbox.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        
+        // Set initial position
+        translateX = -currentImageIndex * 100;
+        updateLightboxPosition();
     }
 
     function closeLightbox() {
-        if (lightbox) {
-            lightbox.classList.remove('active');
-            document.body.style.overflow = '';
-        }
+        if (!lightbox) return;
+        lightbox.classList.remove('active');
+        document.body.style.overflow = '';
+        isDragging = false;
+    }
+
+    function updateLightboxPosition() {
+        if (!lightboxContainer) return;
+        lightboxContainer.style.transform = `translateX(${translateX}%)`;
+    }
+
+    function goToImage(index) {
+        if (index < 0) index = screenshots.length - 1;
+        if (index >= screenshots.length) index = 0;
+        
+        currentImageIndex = index;
+        translateX = -currentImageIndex * 100;
+        updateLightboxPosition();
+        updateIndicators();
+    }
+
+    function updateIndicators() {
+        if (!lightboxIndicator) return;
+        const dots = lightboxIndicator.querySelectorAll('.lightbox-dot');
+        dots.forEach((dot, index) => {
+            if (index === currentImageIndex) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
     }
 
     // Close lightbox
@@ -133,7 +190,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (lightbox) {
         lightbox.addEventListener('click', function(e) {
-            if (e.target === lightbox) {
+            if (e.target === lightbox || e.target === lightboxContainer) {
                 closeLightbox();
             }
         });
@@ -148,43 +205,126 @@ document.addEventListener('DOMContentLoaded', function() {
                 closeLightbox();
                 break;
             case 'ArrowLeft':
-                navigateLightbox(-1);
+                goToImage(currentImageIndex - 1);
                 break;
             case 'ArrowRight':
-                navigateLightbox(1);
+                goToImage(currentImageIndex + 1);
                 break;
         }
     });
 
     // Navigate lightbox
-    function navigateLightbox(direction) {
-        if (screenshots.length === 0) return;
-        
-        currentImageIndex += direction;
-        
-        if (currentImageIndex < 0) {
-            currentImageIndex = screenshots.length - 1;
-        } else if (currentImageIndex >= screenshots.length) {
-            currentImageIndex = 0;
-        }
-        
-        if (lightboxImage) {
-            lightboxImage.src = screenshots[currentImageIndex];
-        }
-    }
-
     if (lightboxPrev) {
         lightboxPrev.addEventListener('click', function(e) {
             e.stopPropagation();
-            navigateLightbox(-1);
+            goToImage(currentImageIndex - 1);
         });
     }
 
     if (lightboxNext) {
         lightboxNext.addEventListener('click', function(e) {
             e.stopPropagation();
-            navigateLightbox(1);
+            goToImage(currentImageIndex + 1);
         });
+    }
+
+    // Touch/Swipe support
+    if (lightboxContainer) {
+        // Touch events
+        lightboxContainer.addEventListener('touchstart', function(e) {
+            isDragging = true;
+            startX = e.touches[0].clientX;
+            currentX = startX;
+        });
+
+        lightboxContainer.addEventListener('touchmove', function(e) {
+            if (!isDragging) return;
+            e.preventDefault();
+            currentX = e.touches[0].clientX;
+            const diff = currentX - startX;
+            const newTranslateX = translateX + (diff / window.innerWidth) * 100;
+            
+            // Limit dragging
+            const minTranslate = -(screenshots.length - 1) * 100;
+            const maxTranslate = 0;
+            translateX = Math.max(minTranslate, Math.min(maxTranslate, newTranslateX));
+            updateLightboxPosition();
+        });
+
+        lightboxContainer.addEventListener('touchend', function(e) {
+            if (!isDragging) return;
+            isDragging = false;
+            
+            const diff = currentX - startX;
+            const threshold = window.innerWidth * 0.2; // 20% of screen width
+            
+            if (Math.abs(diff) > threshold) {
+                if (diff > 0) {
+                    // Swipe right - go to previous
+                    goToImage(currentImageIndex - 1);
+                } else {
+                    // Swipe left - go to next
+                    goToImage(currentImageIndex + 1);
+                }
+            } else {
+                // Snap back to current image
+                goToImage(currentImageIndex);
+            }
+        });
+
+        // Mouse drag support
+        lightboxContainer.addEventListener('mousedown', function(e) {
+            isDragging = true;
+            startX = e.clientX;
+            currentX = startX;
+            lightboxContainer.style.cursor = 'grabbing';
+        });
+
+        lightboxContainer.addEventListener('mousemove', function(e) {
+            if (!isDragging) return;
+            e.preventDefault();
+            currentX = e.clientX;
+            const diff = currentX - startX;
+            const newTranslateX = translateX + (diff / window.innerWidth) * 100;
+            
+            // Limit dragging
+            const minTranslate = -(screenshots.length - 1) * 100;
+            const maxTranslate = 0;
+            translateX = Math.max(minTranslate, Math.min(maxTranslate, newTranslateX));
+            updateLightboxPosition();
+        });
+
+        lightboxContainer.addEventListener('mouseup', function(e) {
+            if (!isDragging) return;
+            isDragging = false;
+            lightboxContainer.style.cursor = 'grab';
+            
+            const diff = currentX - startX;
+            const threshold = window.innerWidth * 0.2; // 20% of screen width
+            
+            if (Math.abs(diff) > threshold) {
+                if (diff > 0) {
+                    // Drag right - go to previous
+                    goToImage(currentImageIndex - 1);
+                } else {
+                    // Drag left - go to next
+                    goToImage(currentImageIndex + 1);
+                }
+            } else {
+                // Snap back to current image
+                goToImage(currentImageIndex);
+            }
+        });
+
+        lightboxContainer.addEventListener('mouseleave', function() {
+            if (isDragging) {
+                isDragging = false;
+                lightboxContainer.style.cursor = 'grab';
+                goToImage(currentImageIndex);
+            }
+        });
+
+        lightboxContainer.style.cursor = 'grab';
     }
 
     // Lazy loading images

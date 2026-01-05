@@ -1,6 +1,13 @@
-<svg width="250" height="83" viewBox="0 0 250 83" xmlns="http://www.w3.org/2000/svg">
-  <rect width="250" height="83" rx="12" fill="#000"/>
-  <text x="125" y="30" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">Download on the</text>
-  <text x="125" y="50" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#fff" text-anchor="middle">App Store</text>
+<svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="appStoreGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#000000;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#333333;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="200" height="60" rx="8" fill="url(#appStoreGrad)"/>
+  <!-- Apple logo -->
+  <path d="M17.05 20.28c-.98.95-2.05.88-3.08.67-1.09-.21-2.18-.42-3.29-.62C9.2 19.9 8.1 19.78 7 19.65c-.31-.04-.61-.07-.91-.08-.31-.01-.6-.01-.88 0-.28.01-.55.03-.8.07-.5.08-.96.25-1.37.5-.41.25-.76.58-1.04.99-.28.41-.42.87-.42 1.38 0 .51.14.97.42 1.38.28.41.63.74 1.04.99.41.25.87.42 1.37.5.25.04.52.06.8.07.28.01.57 0 .88 0 .3-.01.6-.04.91-.08 1.1-.13 2.2-.25 3.29-.42 1.09-.2 2.18-.41 3.29-.62 1.03-.21 2.1-.28 3.08.67.98.95.88 2.05.67 3.08-.21 1.09-.42 2.18-.62 3.29-.17 1.09-.29 2.19-.42 3.29-.04.31-.07.61-.08.91-.01.31 0 .6 0 .88-.01.28-.03.55-.07.8-.08.5-.25.96-.5 1.37-.25.41-.58.76-.99 1.04-.41.28-.87.42-1.38.42-.51 0-.97-.14-1.38-.42-.41-.28-.74-.63-.99-1.04-.25-.41-.42-.87-.5-1.37-.04-.25-.06-.52-.07-.8-.01-.28 0-.57 0-.88.01-.3.04-.6.08-.91.13-1.1.25-2.2.42-3.29.2-1.09.41-2.18.62-3.29.21-1.03.28-2.1-.67-3.08z" fill="#ffffff" transform="translate(15, 15) scale(0.8)"/>
+  <text x="100" y="25" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="600" fill="#ffffff" text-anchor="middle" letter-spacing="0.5px">Download on the</text>
+  <text x="100" y="42" font-family="Helvetica, Arial, sans-serif" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle" letter-spacing="0.5px">App Store</text>
 </svg>
-
