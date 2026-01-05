@@ -235,6 +235,8 @@ body {
 .hero-buttons .download-badge {
     display: inline-block;
     transition: var(--transition);
+    width: 180px;
+    height: 60px;
 }
 
 .hero-buttons .download-badge:hover {
@@ -243,7 +245,8 @@ body {
 
 .hero-buttons .download-badge img {
     height: 60px;
-    width: auto;
+    width: 180px;
+    object-fit: contain;
     filter: drop-shadow(var(--shadow-glow));
 }
 
@@ -436,19 +439,20 @@ section {
 
 .screenshots-grid {
     display: flex;
-    gap: 1rem;
+    gap: 1.5rem;
     margin-top: 3rem;
     height: 80vh;
     min-height: 600px;
-    padding: 0.5rem;
+    padding: 1rem;
+    align-items: stretch;
 }
 
 .screenshot-card {
     background: var(--bg-tertiary);
     border: 2px solid var(--border-color);
     border-radius: 20px;
-    overflow: visible;
-    transition: var(--transition);
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     flex: 1;
     cursor: pointer;
     display: flex;
@@ -459,9 +463,8 @@ section {
 
 .screenshot-card:hover {
     border-color: var(--accent-primary);
-    box-shadow: var(--shadow-glow);
-    transform: scale(1.05);
-    flex: 1.2;
+    box-shadow: 0 10px 40px rgba(0, 255, 136, 0.3);
+    transform: translateY(-10px);
     z-index: 10;
 }
 
@@ -469,24 +472,22 @@ section {
     position: relative;
     width: 100%;
     flex: 1;
-    overflow: visible;
+    overflow: hidden;
     background: var(--bg-primary);
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 18px 18px 0 0;
 }
 
 .screenshot-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: var(--transition);
-    border-radius: 18px 18px 0 0;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .screenshot-card:hover .screenshot-image img {
-    transform: scale(1.08);
+    transform: scale(1.03);
 }
 
 .screenshot-overlay {
@@ -652,6 +653,8 @@ section {
 .download-badge {
     display: inline-block;
     transition: var(--transition);
+    width: 180px;
+    height: 60px;
 }
 
 .download-badge:hover {
@@ -660,7 +663,8 @@ section {
 
 .download-badge img {
     height: 60px;
-    width: auto;
+    width: 180px;
+    object-fit: contain;
     filter: drop-shadow(var(--shadow-glow));
 }
 
@@ -826,8 +830,14 @@ section {
         align-items: center;
     }
 
+    .hero-buttons .download-badge {
+        width: 160px;
+        height: 50px;
+    }
+    
     .hero-buttons .download-badge img {
         height: 50px;
+        width: 160px;
     }
 
     .btn {
@@ -862,8 +872,14 @@ section {
         align-items: center;
     }
 
+    .download-badge {
+        width: 160px;
+        height: 50px;
+    }
+    
     .download-badge img {
         height: 50px;
+        width: 160px;
     }
 
     .qr-codes {
