@@ -440,37 +440,41 @@ section {
     margin-top: 3rem;
     height: 80vh;
     min-height: 600px;
-    overflow: hidden;
+    padding: 0.5rem;
 }
 
 .screenshot-card {
     background: var(--bg-tertiary);
     border: 2px solid var(--border-color);
     border-radius: 20px;
-    overflow: hidden;
+    overflow: visible;
     transition: var(--transition);
     flex: 1;
     cursor: pointer;
     display: flex;
     flex-direction: column;
+    position: relative;
+    z-index: 1;
 }
 
 .screenshot-card:hover {
     border-color: var(--accent-primary);
     box-shadow: var(--shadow-glow);
-    transform: scale(1.02);
+    transform: scale(1.05);
     flex: 1.2;
+    z-index: 10;
 }
 
 .screenshot-image {
     position: relative;
     width: 100%;
     flex: 1;
-    overflow: hidden;
+    overflow: visible;
     background: var(--bg-primary);
     display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: 18px 18px 0 0;
 }
 
 .screenshot-image img {
@@ -478,10 +482,11 @@ section {
     height: 100%;
     object-fit: cover;
     transition: var(--transition);
+    border-radius: 18px 18px 0 0;
 }
 
 .screenshot-card:hover .screenshot-image img {
-    transform: scale(1.05);
+    transform: scale(1.08);
 }
 
 .screenshot-overlay {
@@ -683,6 +688,17 @@ section {
     margin: 0 auto 1rem;
     color: var(--text-tertiary);
     font-size: 0.9rem;
+}
+
+.qr-code {
+    width: 150px;
+    height: 150px;
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    margin: 0 auto 1rem;
+    display: block;
+    background: white;
+    padding: 5px;
 }
 
 .qr-code-item p {
